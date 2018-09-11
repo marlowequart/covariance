@@ -1,21 +1,32 @@
 '''
 Variance, Covariance, std deviation
 
+Sandard Deviation (sigma) is used to quantify the ammount of variation or dispersion of
+a set of data values from its mean. Large std dev indicates the data points are spread out over wider
+range of values. Std Deviation is known as historical volatility, used to estimate expected
+volatility.
+
 Variance (sigma squared) is a measure of the dispersion of a set of datapoints around
 their mean value. Variance measures the variability from an average (volatility).
+Variance uses squares because it weights outliers more heavily than data near the mean.
 
 Covariance is a measure of the degree to which returns on two risky assets move in tandem.
 Positive covariance means the asset returns move together and negative means they move inversely.
+Larger positive numbers mean higher correlation, lower negative numbers means greater inversion.
 Covariance is closely related to correlation, but covariance factors in the standard deviation.
 
 Given: n data sets
 
-Return: Variance, Covariance, std deviation between data sets
+Return: Variance and std deviation of data sets and covariance between data sets
 
 '''
 import pandas as pd
 import numpy as np
 import time
+
+#for correlation plot function
+from matplotlib import pyplot as plt
+from matplotlib import cm as cm
 
 
 
@@ -68,30 +79,63 @@ def slice_sets(list_of_sets,start_date,end_date):
 			break
 		new_list_of_sets2.append(set)
 	
+	# Return full sliced data sets
+	# return new_list_of_sets2
+	
+	#return only price data, not date info	
+	out_set=[]
+	for set in new_list_of_sets2:
+		mid_set=[]
+		for i in range(len(set)):
+			mid_set.append(set[i][1])
+		out_set.append(mid_set)
 
-	return new_list_of_sets2
+	return [[set[i][1] for i in range(len(set))] for set in new_list_of_sets2]
 
 
 	
 
 
 def variance(a_set):
+	# Variance (sigma squared) is a measure of the dispersion of a set of datapoints around
+	# their mean value. Variance measures the variability from an average (volatility).
+	# Variance uses squares because it weights outliers more heavily than data near the mean.
+	
+	# std dev (sigma) is the ammount of variation or dispersion of a set of data values from its mean.
+	# std dev measures the variability from an average (volatility).
+	
 	#pull out the price data column
 	prices=[]
 	for row in a_set:
 		prices.append(row[1])
+	# return variance and std deviation
 	return np.var(prices),np.std(prices)
-	
 
 
-	
-	
-	
-def covariance(list_of_sets):
-	#covariance
-	list=list_of_sets
+def correlation_matrix(df):
+	# Create a correlation matrix, the input is a pandas dataframe with the columns being
+	# the data that you want to make the correlation matrix from.
 
-
+	fig = plt.figure()
+	ax1 = fig.add_subplot(111)
+	
+	# create colormap, 'binary' is b&w, 'jet' is blue to red
+	# 30 represents number of color divisions
+	cmap = cm.get_cmap('jet', 30)
+	
+	
+	cax = ax1.imshow(df.corr(), interpolation='none', cmap=cmap, )
+	fig.colorbar(cax, ticks=np.arange(-1,1.1,0.1))
+	labels=['set1','set2','set3']
+	
+	ax1.grid(which='major', axis='both')
+	plt.title('Set Correlation')
+	ax1.set_xticks([0,1,2])
+	ax1.set_yticks([0,1,2])
+	ax1.set_xticklabels(labels,fontsize=12)
+	ax1.set_yticklabels(labels,fontsize=12)
+	# Add colorbar, make sure to specify tick locations to match desired ticklabels
+	plt.show()
 
 
 
@@ -106,11 +150,11 @@ def main():
 	set2=import_data(read_file2)
 	set3=import_data(read_file3)
 	
-	# Variance can be performed for each set individually
-	# this gives a measure of the volatility
+	# Variance and std deviation can be performed for each set individually
+	# this gives a measure of the volatility.
 	var1,std_dev1=variance(set1)
-	print('Variance is ',var1)
-	print('Std Dev is ', std_dev1)
+	# print('Variance is ',var1)
+	# print('Std Dev is ', std_dev1)
 	
 	
 	
@@ -119,24 +163,26 @@ def main():
 	
 	# For correlations and covariance we want to look at the same date range
 	# slice out the dates we do not want to consider
-	#find maximal minimum date in all sets
+	# find maximal minimum date in all sets
 	start_date=max_min_date(sets)
-	#find minimum of maximum date in all sets
+	# find minimum of maximum date in all sets
 	end_date=min_max_date(sets)
 	# print('date ranges under consideration: '+start_date+' to '+end_date)
-	#create new sets with only specified date ranges
+	
+	# create new sets with only specified date ranges and only return price data.
 	new_list_sets=slice_sets(sets,start_date,end_date)
 	
+	# run covariance of two sets
+	cov1=np.cov(new_list_sets[1],new_list_sets[2])[0][1]
+	print('Covariance set2 to set3 is: ',cov1)
 	
-	# run variance, covariance and std dev
 	
-#	covariance=covariance(sets)
-#	std_dev=std_deviation(sets)
-	
-	# Print results
-#	print('variance is %d', % variance)
-#	print('covariance is %d', % covariance)
-#	print('std deviation is %d', % std_dev)
+	# print correlation matrix
+	df = pd.DataFrame(new_list_sets)
+	df = df.transpose()
+	df.columns = ['set1','set2','set3']
+	# print(df.corr())
+	correlation_matrix(df)
 	
 	
 main()
