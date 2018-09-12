@@ -15,19 +15,35 @@ Positive covariance means the asset returns move together and negative means the
 Larger positive numbers mean higher correlation, lower negative numbers means greater inversion.
 Covariance is closely related to correlation, but covariance factors in the standard deviation.
 
-Given: n data sets
+Given1: n data sets
 
-Return: Variance and std deviation of data sets and covariance between data sets
+Return1: Variance and std deviation of data sets and covariance between individual data sets
+
+
+
+
+Given2:
+-a list of securities and weights in portfolio.
+-daily return data from previous 501 trading days.
+
+Return2: portfolio return variance
+Calculated as: port_var=W'_p *S*W_p
+where
+W'_p: transpose of vector of weights of securities in portfolio
+S: sample covariance matrix of returns
+W_p: vector of weights of securities in portfolio
+
+
+The portfolio return variance is the 
+The lower the correlation between securities in the portfolio, the lower the portfolio variance.
+
 
 '''
 import pandas as pd
 import numpy as np
 import time
 
-#for correlation plot function
-from matplotlib import pyplot as plt
-from matplotlib import cm as cm
-
+from yahoofinancials import YahooFinancials as yf
 
 
 #open csv file, return matrix of data, date in col1, data col2
@@ -112,30 +128,38 @@ def variance(a_set):
 	return np.var(prices),np.std(prices)
 
 
-def correlation_matrix(df):
-	# Create a correlation matrix, the input is a pandas dataframe with the columns being
-	# the data that you want to make the correlation matrix from.
+def port_var(weights,covar_matrix):
+	np.dot(weights.T,np.dot(covar,weights))
+	#or
+	weights.T*np.matrix(covar)*weights
 
-	fig = plt.figure()
-	ax1 = fig.add_subplot(111)
+def update_quote(symbols):
+	pull_data = yf(symbols)
+	all_data = pull_data.get_stock_price_data(reformat=True)
+	current_price = [all_data[sym]['regularMarketPrice'] for sym in symbols]
+	return current_price
 	
-	# create colormap, 'binary' is b&w, 'jet' is blue to red
-	# 30 represents number of color divisions
-	cmap = cm.get_cmap('jet', 30)
+def weights():
+	gold=3
+	#Gold: XAUUSD=X
+	silver=157
+	#Silver: XAGUSD=X
+	AAPL=105
+	SYF=699
+	MHK=125
+	NKE=40
+
+	holdings=[gold,silver,AAPL,SYF,MHK,NKE]
 	
+	#for implementation use the following
+	# prices=update_quote(['XAUUSD=X','XAGUSD=X','AAPL','SYF','MHK','NKE'])
+	#for test use the values below
+	prices=[1209.10,14.17,223.85,32.44,189.74,82.63]
 	
-	cax = ax1.imshow(df.corr(), interpolation='none', cmap=cmap, )
-	fig.colorbar(cax, ticks=np.arange(-1,1.1,0.1))
-	labels=['set1','set2','set3']
-	
-	ax1.grid(which='major', axis='both')
-	plt.title('Set Correlation')
-	ax1.set_xticks([0,1,2])
-	ax1.set_yticks([0,1,2])
-	ax1.set_xticklabels(labels,fontsize=12)
-	ax1.set_yticklabels(labels,fontsize=12)
-	# Add colorbar, make sure to specify tick locations to match desired ticklabels
-	plt.show()
+	position_val=[a*b for a,b in zip(holdings,prices)]
+	total_val=sum(position_val)
+	weights=[a/total_val for a in position_val]
+	return weights
 
 
 
@@ -174,15 +198,19 @@ def main():
 	
 	# run covariance of two sets
 	cov1=np.cov(new_list_sets[1],new_list_sets[2])[0][1]
-	print('Covariance set2 to set3 is: ',cov1)
+	# print('Covariance set2 to set3 is: ',cov1)
 	
+	####################
+	#Now lets look at generating the overall portfolio variance
+	####################
 	
-	# print correlation matrix
-	df = pd.DataFrame(new_list_sets)
-	df = df.transpose()
-	df.columns = ['set1','set2','set3']
-	# print(df.corr())
-	correlation_matrix(df)
+	# Need to write separate script to update all csv files with most recent data
+	
+	# read csv price data from previous 501 days
+	# calculate daily returns based on closing prices
+	# generate the covariance matrix of the sample returns
+	# get the weights of each holding
+	# multiply the weights and covariance matrix to generate the portfolio variance
 	
 	
 main()
