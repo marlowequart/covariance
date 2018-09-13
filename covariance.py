@@ -21,29 +21,10 @@ Return1: Variance and std deviation of data sets and covariance between individu
 
 
 
-
-Given2:
--a list of securities and weights in portfolio.
--daily return data from previous 501 trading days.
-
-Return2: portfolio return variance
-Calculated as: port_var=W'_p *S*W_p
-where
-W'_p: transpose of vector of weights of securities in portfolio
-S: sample covariance matrix of returns
-W_p: vector of weights of securities in portfolio
-
-
-The portfolio return variance is the 
-The lower the correlation between securities in the portfolio, the lower the portfolio variance.
-
-
 '''
 import pandas as pd
 import numpy as np
 import time
-
-from yahoofinancials import YahooFinancials as yf
 
 
 #open csv file, return matrix of data, date in col1, data col2
@@ -126,40 +107,8 @@ def variance(a_set):
 		prices.append(row[1])
 	# return variance and std deviation
 	return np.var(prices),np.std(prices)
-
-
-def port_var(weights,covar_matrix):
-	np.dot(weights.T,np.dot(covar,weights))
-	#or
-	weights.T*np.matrix(covar)*weights
-
-def update_quote(symbols):
-	pull_data = yf(symbols)
-	all_data = pull_data.get_stock_price_data(reformat=True)
-	current_price = [all_data[sym]['regularMarketPrice'] for sym in symbols]
-	return current_price
 	
-def weights():
-	gold=3
-	#Gold: XAUUSD=X
-	silver=157
-	#Silver: XAGUSD=X
-	AAPL=105
-	SYF=699
-	MHK=125
-	NKE=40
 
-	holdings=[gold,silver,AAPL,SYF,MHK,NKE]
-	
-	#for implementation use the following
-	# prices=update_quote(['XAUUSD=X','XAGUSD=X','AAPL','SYF','MHK','NKE'])
-	#for test use the values below
-	prices=[1209.10,14.17,223.85,32.44,189.74,82.63]
-	
-	position_val=[a*b for a,b in zip(holdings,prices)]
-	total_val=sum(position_val)
-	weights=[a/total_val for a in position_val]
-	return weights
 
 
 
@@ -177,8 +126,8 @@ def main():
 	# Variance and std deviation can be performed for each set individually
 	# this gives a measure of the volatility.
 	var1,std_dev1=variance(set1)
-	# print('Variance is ',var1)
-	# print('Std Dev is ', std_dev1)
+	print('Variance is ',var1)
+	print('Std Dev is ', std_dev1)
 	
 	
 	
@@ -198,19 +147,8 @@ def main():
 	
 	# run covariance of two sets
 	cov1=np.cov(new_list_sets[1],new_list_sets[2])[0][1]
-	# print('Covariance set2 to set3 is: ',cov1)
+	print('Covariance set2 to set3 is: ',cov1)
 	
-	####################
-	#Now lets look at generating the overall portfolio variance
-	####################
-	
-	# Need to write separate script to update all csv files with most recent data
-	
-	# read csv price data from previous 501 days
-	# calculate daily returns based on closing prices
-	# generate the covariance matrix of the sample returns
-	# get the weights of each holding
-	# multiply the weights and covariance matrix to generate the portfolio variance
 	
 	
 main()
