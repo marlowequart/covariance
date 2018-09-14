@@ -150,37 +150,25 @@ def var_slope(timespan,vols):
 	
 # Slice sets cuts out the dates before the max/min start date and
 # after the min/max end date
-def slice_sets(ndarray,start_date,end_date):
-	st_dt_num=time.strptime(start_date,'%Y-%m-%d')
-	end_dt_num=time.strptime(end_date,'%Y-%m-%d')
-	
-	#remove values below start date	
-	for set in ndarray:
-		while time.strptime(set[i][0],'%Y-%m-%d')<st_dt_num:
-			set=np.delete(set,i,axis=0)
-		break
-	new_list_of_sets1.append(set)
-	#remove values above end date
-	for set in new_list_of_sets1:
-		for i in range(len(set)-1,-1,-1):
-			while time.strptime(set[i][0],'%Y-%m-%d')>end_dt_num:
-				set=np.delete(set,i,axis=0)
-				i-=1
-			break
-		new_list_of_sets2.append(set)
-	
-	# Return full sliced data sets
-	# return new_list_of_sets2
-	
-	#return only price data, not date info	
-	# out_set=[]
-	# for set in new_list_of_sets2:
-		# mid_set=[]
-		# for i in range(len(set)):
-			# mid_set.append(set[i][1])
-		# out_set.append(mid_set)
+def slice_array(ndarray,start_date,end_date):
+	st_dt_num=datetime.datetime.strptime(start_date,'%Y-%m-%d')
+	end_dt_num=datetime.datetime.strptime(end_date,'%Y-%m-%d')
 
-	# return [[set[i][1] for i in range(len(set))] for set in new_list_of_sets2]
+	#remove values below start date	
+	for i in range(len(ndarray)):
+		while datetime.datetime.strptime(ndarray[i][0],'%Y-%m-%d')<st_dt_num:
+			ndarray=np.delete(ndarray,i,axis=0)
+		break
+		
+	#remove values above end date
+	for i in range(len(ndarray)-1,-1,-1):
+		while datetime.datetime.strptime(ndarray[i][0],'%Y-%m-%d')>end_dt_num:
+			ndarray=np.delete(ndarray,i,axis=0)
+			i-=1
+		break
+
+	# Return full sliced data sets
+	return ndarray
 	
 	
 def main():
@@ -190,7 +178,9 @@ def main():
 	#set a date range in '%Y-%m-%d' format
 	start_date='1995-1-1'
 	end_date='2005-1-1'
-	clean_data=slice_set(clean_data_init,start_date,end_date)
+	clean_data=slice_array(clean_data_init,start_date,end_date)
+
+
 	# init_plot(clean_data)
 	interday_returns=[((clean_data[i][1]/clean_data[i-1][1])-1) for i in range(1,len(clean_data))]
 	interday_returns.insert(0,0)
@@ -209,7 +199,7 @@ def main():
 	var_slopes=[]
 	idxs=[]
 	# time step is number of days to step over. Want to use 250 days(1yr) for long term trends
-	time_step=250
+	time_step=125
 	# resolution is the level of resolution on the graph so that we can get more fine measurements
 	resolution=10
 	for i in range(250,len(clean_data),time_step):
