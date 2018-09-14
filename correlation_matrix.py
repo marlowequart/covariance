@@ -102,28 +102,36 @@ def correlation_matrix(df,labels):
 	fig = plt.figure()
 	ax1 = fig.add_subplot(111)
 	
+
+	###############
+	# Use matplotlib colormap
+	###############
 	# create colormap, 'binary' is b&w, 'jet' is blue to red
 	# 30 represents number of color divisions
-	cmap = cm.get_cmap('jet', 20)
+	
+	# cmap = cm.get_cmap('jet', 20)
+	# cax = ax1.imshow(df.corr(), interpolation='none', cmap=cmap)
+	# fig.colorbar(cax, ticks=np.arange(-1,1.1,0.1))
+	############	
+	# must change number of ticks to match number of positions
+	############	
+	# ax1.set_xticks([0,1,2,3,4])
+	# ax1.set_yticks([0,1,2,3,4])
+	# ax1.set_xticklabels(labels,fontsize=12)
+	# ax1.set_yticklabels(labels,fontsize=12)
+	
+	##########
+	# use seaborn heatmap
+	##########
+	corr = df.corr()
+	ax1=sns.heatmap(corr, annot=True)
 	
 	
-	cax = ax1.imshow(df.corr(), interpolation='none', cmap=cmap, )
-	fig.colorbar(cax, ticks=np.arange(-1,1.1,0.1))
-	#############
-	# change labels to match positions
-	#############
-	
-	
-	ax1.grid(which='major', axis='both')
-	plt.title('Set Correlation')
-	#############	
-	# change number of ticks to match number of positions
-	#############	
-	ax1.set_xticks([0,1,2,3,4])
-	ax1.set_yticks([0,1,2,3,4])
-	ax1.set_xticklabels(labels,fontsize=12)
-	ax1.set_yticklabels(labels,fontsize=12)
+
+
 	# Add colorbar, make sure to specify tick locations to match desired ticklabels
+	ax1.grid(which='major', axis='both')
+	plt.title('Correlations')
 	plt.show()
 	
 	
@@ -169,18 +177,17 @@ def main():
 	# print correlation matrix
 	df = pd.DataFrame(new_list_sets)
 	df = df.transpose()
+	
 	#############	
-	# list all datasets included in plot
+	# list all datasets included in plot, change labels to match positions
 	#############
 	labels=['SWKS','AAPL','SYF','SILVER','GOLD']	
 	df.columns = labels
 	corr = df.corr()
 	# print(corr)
-	# correlation_matrix(df,labels)
+	correlation_matrix(df,labels)
 	
-	#second option to print matrix:
-	sns.heatmap(corr, annot=True)
-	
+
 
 	
 	
