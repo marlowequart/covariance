@@ -23,8 +23,6 @@ Positive slope indicates a trend. The trend could either be downards or upwards.
 import pandas as pd
 import numpy as np
 import datetime
-import warnings
-warnings.filterwarnings("ignore")
 
 #for plot function
 from matplotlib import pyplot as plt
@@ -100,7 +98,8 @@ def variance_ratio_plot(timespan,volatilities):
 	plt.show()
 	
 def var_slope_plot(pri_dataset,idxs,var_slopes,resolution):
-	# plot the variance ratio slopes
+	# plot the variance ratio slopes on the same graph of the orig signal
+	# plot vertical lines at the points where the variance slope crosses zero
 	
 	fig = plt.figure()
 	ax1 = fig.add_subplot(111)
@@ -112,9 +111,8 @@ def var_slope_plot(pri_dataset,idxs,var_slopes,resolution):
 	#add second axis with variance slopes
 	ax2 = ax1.twinx()
 	#want to add datapoints to variance slope line for more resolution
-	new_dx=(max(idxs)-min(idxs))/resolution
+	new_dx=len(pri_dataset)/resolution
 	new_x=np.linspace(min(idxs),max(idxs),new_dx)
-	new_x=[int(x) for x in new_x]
 	var_xdata=[datetime.datetime.strptime(pri_dataset[i][0],'%Y-%m-%d') for i in new_x]
 	var_ydata=sp.interpolate.interp1d(idxs,var_slopes,kind='cubic')(new_x)
 	zeros=[0 for i in range(len(new_x))]
@@ -133,7 +131,6 @@ def var_slope_plot(pri_dataset,idxs,var_slopes,resolution):
 	z_c=np.where(np.diff(np.sign(var_ydata)))[0]
 	zc_idx=[new_x[i] for i in z_c]
 	z_cross=[datetime.datetime.strptime(pri_dataset[i][0],'%Y-%m-%d') for i in zc_idx]
-	print([datetime.datetime.strftime(z,'%Y-%m-%d') for z in z_cross])
 	#draw lines
 	for date in z_cross:
 		plt.axvline(x=date, color='k', linestyle='--')
@@ -176,12 +173,12 @@ def slice_array(ndarray,start_date,end_date):
 	
 	
 def main():
-	read_file='SWKS.csv'
+	read_file='NKE.csv'
 	#import_data returns an nd_array
 	clean_data_init=import_data(read_file)
 	#set a date range in '%Y-%m-%d' format
-	start_date='1995-09-13'
-	end_date='2018-09-10'
+	start_date='1999-1-1'
+	end_date='2018-9-5'
 	clean_data=slice_array(clean_data_init,start_date,end_date)
 
 

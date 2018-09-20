@@ -37,26 +37,29 @@ from math import sqrt
 
 from yahoofinancials import YahooFinancials as yf
 
-#open csv file, return matrix of data of previous 501 trading days
-def import_data(file_name,start_date):
+#open csv file, return matrix of data of previous period trading days
+def import_data(file_name,start_date,period):
 	#open the file using pandas
 	data = pd.read_csv(file_name,header=0)
+	#if prices are strings, convert to floats
+	data['Close']=data['Close'].apply(pd.to_numeric, errors='coerce')
+	
 	#rearrange to make most recent dates first
 	data=data.sort_values(by=['Date'],ascending=False)
 	# print(data[['Date','Close']].head())
+	
 	#pull out the previous 501 days of data starting with start_date
 	start_date=datetime.datetime.strptime(start_date,'%Y-%m-%d')
 	# print(start_date.date())
-	end_date=start_date-datetime.timedelta(days=501)
+	end_date=start_date-datetime.timedelta(days=period)
 	# print(end_date.date())
 	# data = data[(data['Date'] > datetime.datetime.strftime(end_date,'%Y-%m-%d')) & (data['Date'] < datetime.datetime.strftime(start_date,'%Y-%m-%d'))]
 	start_date_index=data.loc[data['Date']==datetime.datetime.strftime(start_date,'%Y-%m-%d')].index[0]
 	# print(start_date_index)
-	end_date_index=start_date_index-501
+	end_date_index=start_date_index-period
 	# print(end_date_index)
 	# data = data[['Date','Close']].loc[end_date_index:start_date_index]
 	data = data[['Date','Close']].loc[start_date_index:end_date_index]
-	
 	return pd.np.array(data)
 	
 	
@@ -94,11 +97,11 @@ def weights():
 	
 	position_val=[a*b for a,b in zip(holdings,prices)]
 	total_val=sum(position_val)
-	weights_ind=[a/total_val for a in position_val]
+	weights_in_list=[a/total_val for a in position_val]
 	weights=[[a/total_val] for a in position_val]
 	# print(weights)
 	# return weights
-	return weights_ind,np.array(weights)
+	return weights_in_list,np.array(weights)
 
 	
 def main():
@@ -115,26 +118,36 @@ def main():
 	recent_start_date='2018-09-05'
 	# data_set=import_data(read_file[0],recent_start_date)
 	# print(data_set)
-	data_sets=[import_data(file,recent_start_date) for file in read_file]
+	
+	#period is the time period over which to calculate the covariance of each holding
+	period=501
+	
+	# data_sets is a list of lists where each list is the daily closing price over
+	# the specified period
+	data_sets=[import_data(file,recent_start_date,period) for file in read_file]
 	# print(len(data_sets)) #5 data sets
 	# print(len(data_sets[0])) #501 items in each data set
 	# print(data_sets[0][:5])
+	# print(type(data_sets[0][5][1]))
 	
 	
 	# calculate daily returns based on closing prices
+	# returns_data_sets is a list of lists where each list is the
+	# daily returns of the symbol over the last given period
 	returns_data_sets=[]
 	for set in data_sets:
 		returns=[]
 		for i in range(1,len(set)):
 			# print(str(set[i][0])+' '+str(set[i][1]))
-			returns.append(round(set[i-1][1]-set[i][1],4))
+			returns.append(set[i-1][1]-set[i][1])
 		returns_data_sets.append(returns)
 
 
 	# generate the covariance matrix of the sample returns
+	# this shows how closely the daily returns of the last given period correlate to each other
 	cov_matrix=np.cov(returns_data_sets)
 	cov_matrix=np.around(cov_matrix,4)
-	np.set_printoptions(suppress=True)
+	# np.set_printoptions(suppress=True)
 	# print(cov_matrix)
 	
 	
