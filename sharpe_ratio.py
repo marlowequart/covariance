@@ -1,12 +1,26 @@
 '''
-sharp ratio
+Sharpe Ratio
+The most widely used method for calculating risk-adjusted return
+The higher the sharpe ratio the better.
+ex1: Buffett sharpe ratio for 1976-2011 is 0.76
+19% excess return over risk free rate, 24.9% volatility
+ex2: the market ratio for 1976-2011 is 0.39
+6.16% excess return, 15.8% volatility
 
+
+Can be inaccurate when applied to portfolios that do not have normal distribution of expected returns
+can be inaccurate with portfolios with a high degree of kurtosis (fat tails)
+
+Also can be inaccurate on portfolios with non-linear risks such as warrants or options
+(see sortino ratio which removes the effects of upward price movements on std dev
+to measure only return against downward price volatility.)
 
 Given:
-historical stock holdings/trade data
+historical stock holdings/trade data .csv file
 
 Return:
-
+The sharpe ratio of the portfolio over the given period is
+sharpe ratio=(mean portfolio return-risk free rate)/portfolio standard deviation
 
 '''
 
@@ -153,7 +167,7 @@ def return_calc(dictionary,start_date,end_date):
 	cov_weights=np.array(weights)
 	
 	all_return=sum(sum_returns)
-	tot_return=round(100*all_return/port_val,2)
+	tot_return=all_return/port_val
 	# print(port_val)
 	# print(tot_return)
 	# print(weights)
@@ -212,9 +226,11 @@ def main():
 	#generate portfolio return over given period as well as a list of weights of holdings
 	# and 
 	port_return,weights=return_calc(hold_dict,start_date,end_date)
+	print('portfolio return is '+str(round(port_return,2)))
 	
 	#generate portfolio std dev over given period
 	std_dev=port_std_dev(hold_dict,start_date,weights)
+	print('portfolio std dev is '+str(round(std_dev,2)))
 	
 	#sharpe ratio
 	sharpe=(port_return-risk_free_r)/std_dev
