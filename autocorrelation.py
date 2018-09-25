@@ -27,6 +27,8 @@ import datetime
 #for plot function
 from matplotlib import pyplot as plt
 from matplotlib.ticker import MultipleLocator
+
+
 from scipy import stats
 import scipy as sp
 import scipy.interpolate
@@ -88,7 +90,7 @@ def variance_ratio_plot(timespan,volatilities):
 	# Optional, plot linear regression line
 	slope, intercept, r_value, p_value, std_err  = stats.linregress(timespan,volatilities)
 	lr_y=[slope*timespan[i]+intercept for i in range(len(timespan))]
-	ax1.plot(timespan,lr_y,'-r')
+	# ~ ax1.plot(timespan,lr_y,'-r')
 	
 	
 	ax1.set_xlabel('Frequency of Observation')
@@ -113,6 +115,7 @@ def var_slope_plot(pri_dataset,idxs,var_slopes,resolution):
 	#want to add datapoints to variance slope line for more resolution
 	new_dx=len(pri_dataset)/resolution
 	new_x=np.linspace(min(idxs),max(idxs),new_dx)
+	new_x=[int(new_x[i]) for i in range(len(new_x))]
 	var_xdata=[datetime.datetime.strptime(pri_dataset[i][0],'%Y-%m-%d') for i in new_x]
 	var_ydata=sp.interpolate.interp1d(idxs,var_slopes,kind='cubic')(new_x)
 	zeros=[0 for i in range(len(new_x))]
@@ -173,11 +176,11 @@ def slice_array(ndarray,start_date,end_date):
 	
 	
 def main():
-	read_file='NKE.csv'
+	read_file='GOLD.csv'
 	#import_data returns an nd_array
 	clean_data_init=import_data(read_file)
 	#set a date range in '%Y-%m-%d' format
-	start_date='1999-1-1'
+	start_date='2005-1-1'
 	end_date='2018-9-5'
 	clean_data=slice_array(clean_data_init,start_date,end_date)
 
@@ -190,8 +193,8 @@ def main():
 	index=1000
 	# print('date under consideration: '+str(clean_data[index][0]))
 	time_lengths=[5,10,20,25,50,100,150,200,250]
-	# volatilities=[volatility_sing(interday_returns,time,index) for time in time_lengths]
-	# variance_ratio_plot(time_lengths,volatilities)
+	# ~ volatilities=[volatility_sing(interday_returns,time,index) for time in time_lengths]
+	# ~ variance_ratio_plot(time_lengths,volatilities)
 	
 	# for the whole data set, find the average slope of the variance ratio plot
 	# and plot that on the dataset.
