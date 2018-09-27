@@ -1,21 +1,5 @@
 '''
-Autocorrelation
-The variance ratio looks at how the volatility changes over time. If the recent
-volatility is higher than longer term, this is likely indicative of a mean reverting period
-However if the longer term volatility is higher than recent, this could indicate a trend.
-In this way, the variance ratio can be used to determine trends.
-Another way to say this is a tool to separate the signal(trend) from the noise.
 
-Given:
-1 data set
-Data set must be sorted by date from oldest at the top to newest date
-
-Return:
-variance_ratio_plot: a graph of the autocorrelation for a given date
-
-want to see how this changes over time and how we might be able to detect a crossover
-from sideways to trend.
-Positive slope indicates a trend. The trend could either be downards or upwards.
 
 '''
 
