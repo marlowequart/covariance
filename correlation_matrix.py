@@ -36,6 +36,8 @@ import seaborn as sns
 def import_data(file_name):
 	#open the file using pandas, use the second row as the header
 	data = pd.read_csv(file_name,header=0)
+	#if prices are strings, convert to floats
+	data['Close']=data['Close'].apply(pd.to_numeric, errors='coerce')
 	return pd.np.array(data[['Date','Close']])
 	
 def max_min_date(list_of_sets):
@@ -144,6 +146,12 @@ def main():
 	read_file3='SYF.csv'
 	read_file4='SILVER.csv'
 	read_file5='GOLD.csv'
+	read_file6='FB.csv'
+	read_file7='SNAP.csv'
+	read_file8='ACGL.csv'
+	
+	#specify long=1 or short=0
+	long_short=[0,1,1,1,1,0,0,1]
 
 	#############	
 	# create matrix of imported data
@@ -153,7 +161,9 @@ def main():
 	set3=import_data(read_file3)
 	set4=import_data(read_file4)
 	set5=import_data(read_file5)
-	# set6=import_data(read_file6)
+	set6=import_data(read_file6)
+	set7=import_data(read_file7)
+	set8=import_data(read_file8)
 	
 	# print(set1[:10])
 	# print(set2[:10])
@@ -161,7 +171,7 @@ def main():
 	#############	
 	# create list of matrices
 	#############	
-	sets=[set1,set2,set3,set4,set5]
+	sets=[set1,set2,set3,set4,set5,set6,set7,set8]
 	
 	# For correlations and covariance we want to look at the same date range
 	# slice out the dates we do not want to consider
@@ -173,6 +183,14 @@ def main():
 	
 	# create new sets with only specified date ranges and only return price data.
 	new_list_sets=slice_sets(sets,start_date,end_date)
+
+	#invert data for short positions
+	#adjust returns results for long vs short positions
+	for i in range(len(new_list_sets)):
+		if long_short[i]==0:
+			for x in range(len(new_list_sets[i])):
+				new_list_sets[i][x]=new_list_sets[i][x]*-1.
+
 	
 	# print correlation matrix
 	df = pd.DataFrame(new_list_sets)
@@ -181,11 +199,16 @@ def main():
 	#############	
 	# list all datasets included in plot, change labels to match positions
 	#############
-	labels=['SWKS','AAPL','SYF','SILVER','GOLD']	
+	labels=['s_SWKS','l_AAPL','l_SYF','l_SILVER','l_GOLD','s_FB','s_SNAP','l_ACGL']	
 	df.columns = labels
 	corr = df.corr()
-	# print(corr)
-	correlation_matrix(df,labels)
+	
+	#sum all correlations in correlation matrix to determine overall correlation
+	sum_corr=corr.values.sum()
+	
+	print('Total sum is '+str(sum_corr))
+	print(corr)
+	# correlation_matrix(df,labels)
 	
 
 

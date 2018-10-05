@@ -73,26 +73,26 @@ def main():
 	############
 
 	# Spot Price
-	s0 = 83.50
+	s0 = 33.7
 
 	# Short puts 81,85
-	higher_strikeprice_short_put = 85.0
+	higher_strikeprice_short_put = 40.0
 	#3.6
-	premium_higher_strike_short_put = 2.40
+	premium_higher_strike_short_put = 8.0
 	higher_put='short_put'
 
-	lower_strikeprice_short_put = 80.0
+	lower_strikeprice_short_put = 30.0
 	#1.8
-	premium_lower_strike_short_put = 1.17
+	premium_lower_strike_short_put = 2.6
 	lower_put='short_put'
 
 	# long put
-	strikeprice_long_put = 82.50
-	premium_long_put = 1.65
+	strikeprice_long_put = 35.0
+	premium_long_put = 5.0
 	long_put='long_put'
 
 	# Range of stock prices at expiration
-	sT = np.arange(70,100,1)
+	sT = np.arange(15,50,1)
 
 
 	#####
