@@ -93,7 +93,7 @@ def get_prices():
 	#for implementation use the following
 	# prices=update_quote(['XAUUSD=X','XAGUSD=X','AAPL','SYF','SWKS'])
 	#for test use the values below
-	prices=[1191.3,14.55,229.28,31.34,91.88,29.44,82.77,170.03,159.33,8.18]
+	prices=[1191.3,14.55,229.28,31.34,27.8,29.44,82.77,170.03,159.33,8.18]
 	
 	return prices
 	
@@ -121,7 +121,7 @@ def main():
 	# Need to write separate script to update all csv files with most recent data
 	
 	# read csv price data from previous 501 days
-	holdings=['GOLD','SILVER','AAPL','SYF','SWKS','ACGL','NKE','MHK','FB','SNAP']
+	holdings=['GOLD','SILVER','AAPL','SYF','AMD','ACGL','NKE','MHK','FB','SNAP']
 	#specify long=1 or short=0
 	long_short=[1,1,1,1,0,1,1,1,0,0]
 	read_file=[sym+'.csv' for sym in holdings]
@@ -163,23 +163,23 @@ def main():
 	##################
 	# input current holdings levels. the lists are the levels that will be iterated over
 	##################
-	gold=[0,3]
+	gold=[3]
 	#3
 	#Gold: XAUUSD=X
-	silver=[10,157,700]
+	silver=[157]
 	#157
 	#Silver: XAGUSD=X
-	AAPL=[105,200]
+	AAPL=[105]
 	#105
-	SYF=[100,699,800]
-	SWKS=[1,10,200]
+	SYF=[699]
+	AMD=[1,100,400]
 	#200
-	ACGL=[325,600]
-	NKE=[40,100]
-	MHK=[1,25]
+	ACGL=[325]
+	NKE=[40]
+	MHK=[25]
 	FB=[300]
 	#300
-	SNAP=[1000,3000,10000]
+	SNAP=[1000]
 	#1000
 	
 	prices=get_prices()
@@ -192,13 +192,13 @@ def main():
 		for b in range(len(silver)):
 			for c in range(len(AAPL)):
 				for d in range(len(SYF)):
-					for e in range(len(SWKS)):
+					for e in range(len(AMD)):
 						for f in range(len(ACGL)):
 							for g in range(len(NKE)):
 								for h in range(len(MHK)):
 									for i in range(len(FB)):
 										for j in range(len(SNAP)):
-											holdings_w=[gold[a],silver[b],AAPL[c],SYF[d],SWKS[e],ACGL[f],NKE[g],MHK[h],FB[i],SNAP[j]]
+											holdings_w=[gold[a],silver[b],AAPL[c],SYF[d],AMD[e],ACGL[f],NKE[g],MHK[h],FB[i],SNAP[j]]
 											cur_var=var_calc(returns_data_sets,holdings_w,prices)
 											z+=1
 											if cur_var < min_var:

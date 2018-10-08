@@ -25,6 +25,8 @@ Check areas with ########## breakpoints:
 import pandas as pd
 import numpy as np
 import time
+import datetime
+from datetime import timedelta
 
 #for correlation plot function
 from matplotlib import pyplot as plt
@@ -137,6 +139,16 @@ def correlation_matrix(df,labels):
 	plt.show()
 	
 	
+def get_date(date,timediff):
+	# generate a date that is time days behind date
+	# get end date in number
+	ending_date=datetime.datetime.strptime(date,'%Y-%m-%d')
+	beg_date=ending_date-timedelta(timediff)
+	# create string of old date
+	old_date=datetime.datetime.strftime(beg_date,'%Y-%m-%d')
+	return old_date
+	
+	
 def main():
 	#############	
 	# define file names
@@ -147,8 +159,9 @@ def main():
 	read_file4='SILVER.csv'
 	read_file5='GOLD.csv'
 	read_file6='FB.csv'
-	read_file7='SNAP.csv'
+	# ~ read_file7='SNAP.csv'
 	read_file8='ACGL.csv'
+	read_file9='AMD.csv'
 	
 	#specify long=1 or short=0
 	long_short=[0,1,1,1,1,0,0,1]
@@ -162,8 +175,9 @@ def main():
 	set4=import_data(read_file4)
 	set5=import_data(read_file5)
 	set6=import_data(read_file6)
-	set7=import_data(read_file7)
+	# ~ set7=import_data(read_file7)
 	set8=import_data(read_file8)
+	set9=import_data(read_file9)
 	
 	# print(set1[:10])
 	# print(set2[:10])
@@ -171,16 +185,18 @@ def main():
 	#############	
 	# create list of matrices
 	#############	
-	sets=[set1,set2,set3,set4,set5,set6,set7,set8]
+	sets=[set1,set2,set3,set4,set5,set6,set9,set8]
 	
 	# For correlations and covariance we want to look at the same date range
 	# slice out the dates we do not want to consider
 	# find maximal minimum date in all sets
-	start_date=max_min_date(sets)
+	# ~ start_date=max_min_date(sets)
 	# find minimum of maximum date in all sets
 	end_date=min_max_date(sets)
+	# set date range to a specific time period
+	timespan=181
+	start_date=get_date(end_date,timespan)
 	print('date ranges under consideration: '+start_date+' to '+end_date)
-	
 	# create new sets with only specified date ranges and only return price data.
 	new_list_sets=slice_sets(sets,start_date,end_date)
 
@@ -199,16 +215,16 @@ def main():
 	#############	
 	# list all datasets included in plot, change labels to match positions
 	#############
-	labels=['s_SWKS','l_AAPL','l_SYF','l_SILVER','l_GOLD','s_FB','s_SNAP','l_ACGL']	
+	labels=['s_SWKS','l_AAPL','l_SYF','l_SILVER','l_GOLD','s_FB','s_AMD','l_ACGL']
 	df.columns = labels
 	corr = df.corr()
 	
 	#sum all correlations in correlation matrix to determine overall correlation
 	sum_corr=corr.values.sum()
 	
-	print('Total sum is '+str(sum_corr))
+	# ~ print('Total sum is '+str(sum_corr))
 	print(corr)
-	# correlation_matrix(df,labels)
+	# ~ correlation_matrix(df,labels)
 	
 
 

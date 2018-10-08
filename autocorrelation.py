@@ -1,21 +1,28 @@
 '''
 Autocorrelation
 The variance ratio looks at how the volatility changes over time. If the recent
-volatility is higher than longer term, this is likely indicative of a mean reverting period
-However if the longer term volatility is higher than recent, this could indicate a trend.
-In this way, the variance ratio can be used to determine trends.
+volatility is higher than longer term, the slope is negative and this is likely indicative
+of a mean reverting period.
+However if the longer term volatility is higher than recent, the slope is positive and
+this could indicate a trend.
+In this way, the variance ratio can be used to determine if there is structure in the data and
+possibly determine trends.
 Another way to say this is a tool to separate the signal(trend) from the noise.
 
 Given:
-1 data set
+1 data set of closing prices in .csv format over any given time period
 Data set must be sorted by date from oldest at the top to newest date
 
 Return:
 variance_ratio_plot: a graph of the autocorrelation for a given date
+blue line is original time series
+red line is the slope of the variance ratio at each time point
+-Positive slope indicates a trend. The trend could either be downards or upwards.
+-Negative slope indicates mean reversion.
 
-want to see how this changes over time and how we might be able to detect a crossover
-from sideways to trend.
-Positive slope indicates a trend. The trend could either be downards or upwards.
+want to see how the slope of the variance ratio changes over time.
+Might be able to detect trends starting and ending at the zero crossover.
+
 
 '''
 
@@ -33,7 +40,7 @@ from scipy import stats
 import scipy as sp
 import scipy.interpolate
 
-#open csv file, return matrix of data, date in col1, data col2
+#open csv file, return numpy array matrix of data, date in col1, data col2
 def import_data(file_name):
 	#open the file using pandas, use the first row as the header
 	data = pd.read_csv(file_name,header=0)
@@ -59,7 +66,8 @@ def volatility_sing(int_retns,timespan,idx):
 	# int_retns is an nd_array of the daily returns
 	# timespan is an int
 	# idx is the index to calculate
-
+	
+	# in this case we use std deviation to represent volatility
 	return np.std(int_retns[(idx-timespan):idx])
 	
 	
@@ -79,15 +87,14 @@ def init_plot(ndarray):
 	plt.show()
 	
 def variance_ratio_plot(timespan,volatilities):
-	# Create a correlation matrix, the input is a pandas dataframe with the columns being
-	# the data that you want to make the correlation matrix from.
+	# Plot the historical volatility over time at a given datapoint
 	fig = plt.figure()
 	ax1 = fig.add_subplot(111)
 	ax1.plot(timespan,volatilities)
 	ax1.xaxis.set_major_locator(MultipleLocator(50))
 	
 
-	# Optional, plot linear regression line
+	# Optional, plot linear regression line to show if slope is positive or negative
 	slope, intercept, r_value, p_value, std_err  = stats.linregress(timespan,volatilities)
 	lr_y=[slope*timespan[i]+intercept for i in range(len(timespan))]
 	# ~ ax1.plot(timespan,lr_y,'-r')
@@ -137,7 +144,6 @@ def var_slope_plot(pri_dataset,idxs,var_slopes,resolution):
 	#draw lines
 	for date in z_cross:
 		plt.axvline(x=date, color='k', linestyle='--')
-	#shade anything positive light grey
 	
 	
 	ax1.set_xlabel('Date')
@@ -152,8 +158,10 @@ def var_slope(timespan,vols):
 	slope, intercept, r_value, p_value, std_err  = stats.linregress(timespan,vols)
 	return slope
 	
-# Slice sets cuts out the dates before the max/min start date and
-# after the min/max end date
+	
+	
+# Slice sets cuts out the dates before the start date and
+# after the end date
 def slice_array(ndarray,start_date,end_date):
 	st_dt_num=datetime.datetime.strptime(start_date,'%Y-%m-%d')
 	end_dt_num=datetime.datetime.strptime(end_date,'%Y-%m-%d')
@@ -179,13 +187,14 @@ def main():
 	read_file='GOLD.csv'
 	#import_data returns an nd_array
 	clean_data_init=import_data(read_file)
-	#set a date range in '%Y-%m-%d' format
+	#set the date range in '%Y-%m-%d' format
 	start_date='2005-1-1'
 	end_date='2018-9-5'
 	clean_data=slice_array(clean_data_init,start_date,end_date)
-
-
+	
+	
 	# init_plot(clean_data)
+	# Generate the interday returns of the price data
 	interday_returns=[((clean_data[i][1]/clean_data[i-1][1])-1) for i in range(1,len(clean_data))]
 	interday_returns.insert(0,0)
 
@@ -207,13 +216,14 @@ def main():
 	# resolution is the level of resolution on the graph so that we can get more fine measurements
 	resolution=10
 	for i in range(250,len(clean_data),time_step):
-		# start the index at a number above the longest time length in order to get a
+		# start the index at a number above the longest time length in time_lengths in order to get a
 		# good slope value
 		idxs.append(i)
 		#generate the variances for the given time lengths
 		var_slope_vol=[volatility_sing(interday_returns,time,i) for time in time_lengths]
 		#get the slope of the variance ratio plot
 		var_slopes.append(var_slope(time_lengths,var_slope_vol))
+	
 	#need to get a list of x values of the dates based on time step used
 	# print(var_slopes)
 	#plot the var slopes on the plot with original data
