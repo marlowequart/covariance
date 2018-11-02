@@ -66,25 +66,25 @@ def main():
 	############
 	#
 	# Option price data input
-	# Nov 16 expiration MHK
+	# Oct 19 expiration nflx
 	# 
 	############
 
 	# Spot Price
-	s0 = 168.09
+	s0 = 346.4
 
 	# long put
-	strikeprice_long_put = 165.0
-	premium_long_put = 6.0
+	strikeprice_long_put = 345.0
+	premium_long_put = 16.5
 	long_put='long_put'
 	
 	# long call
-	strikeprice_long_call = 175.0
-	premium_long_call = 4.85
+	strikeprice_long_call = 345.0
+	premium_long_call = 18.5
 	long_call='long_call'
 
 	# Range of stock prices at expiration
-	sT = np.arange(125,225,5)
+	sT = np.arange(225,525,5)
 
 
 	#####
@@ -108,6 +108,8 @@ def main():
 	straddle_payoff = long_put_payoff+long_call_payoff
 	title='Straddle payoff'
 	# ~ plot_option(sT,Butterfly_spread_payoff,title)
+	low_zero=np.where(straddle_payoff == 0)[0][0]
+	high_zero=np.where(straddle_payoff == 0)[0][1]
 	
 	
 	
@@ -116,10 +118,15 @@ def main():
 	#####
 	profit = max(straddle_payoff)
 	loss = min(straddle_payoff)
+	
 
 	print()
-	print ("Max Profit: %.2f" %profit)
-	print ("Max Loss: %.2f" %loss)
+	print("Cost: %.2f" %-loss)
+	# ~ print ("Max Profit: %.2f" %profit)
+	# ~ print ("Max Loss: %.2f" %loss)
+	print('strike: '+str(s0))
+	print('low breakeven: '+str(sT[low_zero]))
+	print('high breakeven: '+str(sT[high_zero]))
 	print()
 
 

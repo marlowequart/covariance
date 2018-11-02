@@ -37,7 +37,7 @@ def main():
 	#####
 	# insert name of symbol under consideration
 	#####
-	file_name='FB.csv'
+	file_name='SPY.csv'
 	timespan=10
 	
 	table=import_data(file_name,timespan)
