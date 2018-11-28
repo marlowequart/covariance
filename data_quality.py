@@ -96,6 +96,32 @@ def check_duplicates(list):
 	print('Largest number of repeated values in dataset is '+str(max_dup))
 	print('This represents '+str(max_dup_pct)+'% of the total number of values')
 	
+def countnums(dataframe,cols):
+	#count the number of each digit in the columns in a dataframe
+	#then plot the result
+	numcount = {'0':0, '1':0, '2':0, '3':0, '4':0, '5':0, '6':0, '7':0, '8':0, '9':0}
+	# print(numcount)
+	
+	for col in cols:
+		for i in range(len(dataframe)):
+			test = str(dataframe[col][i])
+			for item in numcount:
+				count = test.count(item)
+				numcount[item]=numcount[item]+count
+	print(numcount)
+	#list the numbers from 9 to 0
+	numlist=[]
+	nums=[9,8,7,6,5,4,3,2,1,0]
+	for num in nums:
+		numlist.append(numcount[str(num)])
+	
+	fig = plt.figure()
+	ax1 = fig.add_subplot(111)
+	ax1.plot(nums,numlist)
+	ax1.grid('on')
+	plt.show()
+	
+	
 def main():
 	
 	# import the data from an existing file
@@ -104,21 +130,27 @@ def main():
 	#####
 	# Change the file name here
 	#####
-	file_name='SPY.csv'
+	#windows path:
+	path = 'C:\\Python\\Data\\ES_data_test\\'
+	# file_name='all_data_v1.csv'
+	file_name='ESH08_12_01_to_03_30.csv'
 	
-	df=import_data(file_name)
+	#mac path:
 	
+	
+	df=import_data(path+file_name)
+
 	#print column headings
 	# print (*df.columns, sep=', ')
 	
 	#####
 	# Input here the column you wish to study
 	#####
-	data_list=df['Volume'].tolist()
+	data_list=df['Close'].tolist()
 	# print(data_list[:20])
-	plot_hist(data_list)
+	# plot_hist(data_list)
 	# hist_basic(data_list)
-	check_duplicates(data_list)
+	# check_duplicates(data_list)
 	
 	#####
 	# Create list of % change by row and plot histogram
@@ -135,10 +167,20 @@ def main():
 	#####
 	# Check for blank entries
 	#####
-	check_nan=np.where(pd.isnull(df))
-	check_blank=np.where(df.applymap(lambda x: x == ''))
+	# check_nan=np.where(pd.isnull(df))
+	# check_blank=np.where(df.applymap(lambda x: x == ''))
 	# print(check_blank)
 	
+	
+	#####
+	# count all individual numbers in file
+	#####
+	#columns to check
+	# cols=['Date','Time','Open','High','Low','Close']
+	cols=['Open','High','Low','Close']
+	countnums(df,cols)
+	# test = str(df['Open'][13])
+
 
 	
 main()

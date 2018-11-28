@@ -171,6 +171,7 @@ def main():
 	# print('start_idx date check: idx: '+str(start_idx)+', date: '+str(df['Date'][start_idx]))
 	end_idx=int(df.index[df['Date'] == '2018-08-31'][0])
 	# print('end_idx date check: idx: '+str(end_idx)+', date: '+str(df['Date'][end_idx]))
+	
 	#plot it
 	gen_plot(df,start_idx,end_idx)
 	
