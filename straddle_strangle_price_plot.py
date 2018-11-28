@@ -66,25 +66,25 @@ def main():
 	############
 	#
 	# Option price data input
-	# Oct 19 expiration nflx
+	# Feb 15 expiration mhk
 	# 
 	############
 
 	# Spot Price
-	s0 = 346.4
+	s0 = 130
 
 	# long put
-	strikeprice_long_put = 345.0
-	premium_long_put = 16.5
+	strikeprice_long_put = 120.0
+	premium_long_put = 5.0
 	long_put='long_put'
 	
 	# long call
-	strikeprice_long_call = 345.0
-	premium_long_call = 18.5
+	strikeprice_long_call = 140.0
+	premium_long_call = 6.0
 	long_call='long_call'
 
 	# Range of stock prices at expiration
-	sT = np.arange(225,525,5)
+	sT = np.arange(100,200,1)
 
 
 	#####

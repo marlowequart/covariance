@@ -22,6 +22,15 @@ https://www.whitepapers.em360tech.com/wp-content/files_mf/1407250286DAMAUKDQDime
 6. Consistency
 
 
+If the data is human made, there is more 1s 4s and 7s because people think those numbers are random
+1n general, 1 tends to be 50% of data
+In general, the number distribution is logrithmic, 1 is highest number,
+falling off as numbers get larger
+
+Ask accountants or SEC when looking through numbers, which numbers brings concern of cooking the books
+
+
+
 '''
 
 import pandas as pd
