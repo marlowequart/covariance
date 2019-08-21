@@ -19,6 +19,9 @@ Check areas with ########## breakpoints:
 			number of data sets
 			include all sets
 			include all sets
+			
+			
+60 days is optimum timespan to measure correlation (per dalio)
 
 '''
 #for data manipulation

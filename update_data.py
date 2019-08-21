@@ -40,8 +40,8 @@ def main():
 	#####
 	# Change the symbol here
 	#####
-	file_name='SPY.csv'
-	sym='SPY'
+	file_name='^RUT.csv'
+	sym='^RUT'
 	
 	recent_date,today_date,df=import_data(file_name)
 	

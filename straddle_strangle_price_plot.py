@@ -29,7 +29,7 @@ the max profit and loss
 #for data manipulation
 import numpy as np
 import datetime
-import seaborn
+# ~ import seaborn
 import matplotlib.pyplot as plt
 
 import warnings
@@ -71,20 +71,20 @@ def main():
 	############
 
 	# Spot Price
-	s0 = 130
+	s0 = 2870
 
 	# long put
-	strikeprice_long_put = 120.0
-	premium_long_put = 5.0
+	strikeprice_long_put = 2850.0
+	premium_long_put = 25.0
 	long_put='long_put'
 	
 	# long call
-	strikeprice_long_call = 140.0
-	premium_long_call = 6.0
+	strikeprice_long_call = 2890.0
+	premium_long_call = 25.0
 	long_call='long_call'
 
 	# Range of stock prices at expiration
-	sT = np.arange(100,200,1)
+	sT = np.arange(2800,2950,1)
 
 
 	#####
