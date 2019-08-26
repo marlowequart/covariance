@@ -1,5 +1,5 @@
 '''
-Long Call Butterfly Plots
+Black Scholes formula calculations
 
 Given: Option price data
 C=Call option price
@@ -90,6 +90,53 @@ def put_greeks(S,K,r,t,v):
 	
 	print('put delta: '+str(round(delta,4)))
 	
+def plot_call_payoff(S,K,r,t,v):
+	# generate 30 datapoints
+	# using delta price of 5% of current price
+	price=K
+	price_delta=round(0.05*price)
+	x_data=np.arange(price-15*price_delta,price+15*price_delta,price_delta)
+	# ~ print('x_data:')
+	# ~ print(x_data)
+	xdata=[]
+	opt_price=[]
+	for xval in x_data:
+		xdata.append(xval)
+		opt_price.append(call_opt_price(xval,K,r,t,v))
+	
+	fig, ax = plt.subplots()
+	ax.spines['bottom'].set_position('zero')
+	ax.plot(xdata,opt_price, color='b')
+	ax.set_title('Call Option Payoff')
+	plt.xlabel('Stock Price')
+	plt.ylabel('Profit & Loss')
+	plt.show()
+	
+	
+def plot_put_payoff(S,K,r,t,v):
+	# generate 30 datapoints
+	# using delta price of 5% of current price
+	price=K
+	price_delta=round(0.01*price)
+	x_data=np.arange(price-15*price_delta,price+15*price_delta,price_delta)
+	# ~ print('x_data:')
+	# ~ print(x_data)
+	
+	xdata=[]
+	opt_price=[]
+	for xval in x_data:
+		xdata.append(xval)
+		opt_price.append(put_opt_price(xval,K,r,t,v))
+	
+	# ~ print(opt_price)
+	# ~ return
+	fig, ax = plt.subplots()
+	ax.spines['bottom'].set_position('zero')
+	ax.plot(xdata,opt_price, color='b')
+	ax.set_title('Put Option Payoff')
+	plt.xlabel('Stock Price')
+	plt.ylabel('Profit & Loss')
+	plt.show()
 
 def main():
 	############
@@ -99,15 +146,15 @@ def main():
 	############
 	
 	# put/call option price
-	P=2.42
+	P=0.9
 	# current underlying price
-	S=36.7
+	S=2925.75
 	# strike price
-	K=35
+	K=2100
 	# risk free rate
-	r=0.01
+	r=0.019
 	# time to maturity (days)
-	t1=26
+	t1=40
 	# time to maturity (% of year)
 	t=t1/252
 	
@@ -123,8 +170,8 @@ def main():
 	v=1.0
 	error=100
 	while abs(error) > 0.01:
-		# price=put_opt_price(S,K,r,t,v)
-		price=call_opt_price(S,K,r,t,v)
+		price=put_opt_price(S,K,r,t,v)
+		# ~ price=call_opt_price(S,K,r,t,v)
 		error=P-price
 		if error > 0:
 			v=v+v*.1
@@ -135,9 +182,14 @@ def main():
 	print()
 	print('Final price: '+str(round(price,2))+', volatility: '+str(round(100*v,2)))
 	
+	print('put_option price: '+str(put_opt_price(S,K,r,t,v)))
+	
 	# v=.48
 	# put_greeks(S,K,r,t,v)
-	call_greeks(S,K,r,t,v)
+	# ~ call_greeks(S,K,r,t,v)
+	
+	#Plot the option payoff
+	# ~ plot_put_payoff(S,K,r,t,v)
 	
 	
 main()
