@@ -116,9 +116,15 @@ def plot_call_payoff(S,K,r,t,v):
 def plot_put_payoff(S,K,r,t,v):
 	# generate 30 datapoints
 	# using delta price of 5% of current price
+	# print('strike='+str(K)+', time='+str(t)+', vol='+str(v)+', cur price='+str(S))
+	# print('opt price: '+str(put_opt_price(S,K,r,t,v)))
+	
 	price=K
 	price_delta=round(0.01*price)
-	x_data=np.arange(price-15*price_delta,price+15*price_delta,price_delta)
+	if S < (price+15*price_delta):
+		x_data=np.arange(price-15*price_delta,price+15*price_delta,price_delta)
+	else:
+		x_data=np.arange(price-15*price_delta,round(S)+price_delta,price_delta)
 	# ~ print('x_data:')
 	# ~ print(x_data)
 	
@@ -163,7 +169,7 @@ def main():
 	# price=put_opt_price(S,K,r,t,v)
 	# error=P-price
 	# print('vol: '+str(round(100*v,2))+', price: '+str(round(price,2))+', error: '+str(round(error,2)))
-	
+	'''
 	# Run this loop to optimize to find the volatility based on knowing the price
 	# can run for both put and call
 	#volatility
@@ -180,16 +186,56 @@ def main():
 		# print('vol: '+str(round(100*v,2))+', price: '+str(round(price,2))+', error: '+str(round(error,2)))
 	
 	print()
-	print('Final price: '+str(round(price,2))+', volatility: '+str(round(100*v,2)))
+	# print('Final price: '+str(round(price,2))+', volatility: '+str(round(100*v,2)))
 	
-	print('put_option price: '+str(put_opt_price(S,K,r,t,v)))
-	
+	# print('put_option price: '+str(put_opt_price(S,K,r,t,v)))
+	'''
 	# v=.48
 	# put_greeks(S,K,r,t,v)
 	# ~ call_greeks(S,K,r,t,v)
 	
+	# Run this loop to optimize to find the strike price for a given volatility and delta
+	# can run for both put and call.
+	# next calculate the price
+	# current underlying price
+	S=2925.75
+	# risk free rate
+	r=0.019
+	# time to maturity (days)
+	t1=40
+	# time to maturity (% of year)
+	t=t1/252
+	# given volatility
+	v=0.31
+	
+	# input desired delta
+	D=-0.5
+	K=1.0*10**6
+	error=100
+	while abs(error) > 0.010:
+		
+		d1=(m.log(S/K)+t*(r+((v**2)/2)))/(v*m.sqrt(t))
+		nd1=norm.cdf(d1)
+		# call delta
+		# delta=m.exp(-r*t)*nd1
+		# delta=nd1
+		# put delta
+		delta=nd1-1
+		# delta=m.exp(-r*t)*(nd1-1)
+		# error=D-delta
+		if error > 0:
+			K=K-K*.1
+		else:
+			K=K+K*.1
+		# print('S='+str(S)+', K='+str(round(K,2))+', delta='+str(round(delta,2))+', error='+str(round(error,2)))
+		error=D-delta
+	print()
+	# price=call_opt_price(S,K,r,t,v)
+	price=put_opt_price(S,K,r,t,v)
+	print('Final strike price: '+str(round(K,2))+', price: '+str(round(price,2))+', volatility: '+str(round(v,2)))
+	
 	#Plot the option payoff
-	# ~ plot_put_payoff(S,K,r,t,v)
+	plot_put_payoff(S,K,r,t,v)
 	
 	
 main()
