@@ -85,7 +85,8 @@ def put_greeks(S,K,r,t,v):
 	nd1=norm.cdf(d1)
 	nd2=norm.cdf(d2)
 	
-	delta=m.exp(-r*t)*(nd1-1)
+	# delta=m.exp(-r*t)*(nd1-1)
+	delta=nd1-1
 	gamma=(m.exp(-r*t)/(S*v*m.sqrt(t)))*(m.exp(((-d1)**2)/2)/m.sqrt(2*m.pi))
 	
 	print('put delta: '+str(round(delta,4)))
@@ -150,17 +151,17 @@ def main():
 	# 
 	# 
 	############
-	
+	'''
 	# put/call option price
-	P=0.9
+	P=13.75
 	# current underlying price
-	S=2925.75
+	S=3007
 	# strike price
-	K=2100
+	K=2700
 	# risk free rate
 	r=0.019
 	# time to maturity (days)
-	t1=40
+	t1=43
 	# time to maturity (% of year)
 	t=t1/252
 	
@@ -169,50 +170,55 @@ def main():
 	# price=put_opt_price(S,K,r,t,v)
 	# error=P-price
 	# print('vol: '+str(round(100*v,2))+', price: '+str(round(price,2))+', error: '+str(round(error,2)))
-	'''
+	
 	# Run this loop to optimize to find the volatility based on knowing the price
 	# can run for both put and call
 	#volatility
 	v=1.0
 	error=100
+	n=10
 	while abs(error) > 0.01:
 		price=put_opt_price(S,K,r,t,v)
 		# ~ price=call_opt_price(S,K,r,t,v)
 		error=P-price
 		if error > 0:
-			v=v+v*.1
+			v=v+v*(1/n)
 		else:
-			v=v-v*.1
+			v=v-v*(1/n)
 		# print('vol: '+str(round(100*v,2))+', price: '+str(round(price,2))+', error: '+str(round(error,2)))
+		n += 1
+		
 	
 	print()
-	# print('Final price: '+str(round(price,2))+', volatility: '+str(round(100*v,2)))
+	print('Final price: '+str(round(price,2))+', volatility: '+str(round(100*v,2)))
 	
-	# print('put_option price: '+str(put_opt_price(S,K,r,t,v)))
+	# print('S: '+str(S)+', K: '+str(K)+', v: '+str(round(v,4)))
+	print('put_option price: '+str(round(put_opt_price(S,K,r,t,v),2)))
 	'''
 	# v=.48
 	# put_greeks(S,K,r,t,v)
 	# ~ call_greeks(S,K,r,t,v)
-	
+	'''
 	# Run this loop to optimize to find the strike price for a given volatility and delta
 	# can run for both put and call.
 	# next calculate the price
 	# current underlying price
-	S=2925.75
+	S=3007
 	# risk free rate
 	r=0.019
 	# time to maturity (days)
-	t1=40
+	t1=43
 	# time to maturity (% of year)
 	t=t1/252
 	# given volatility
-	v=0.31
+	v=0.26
 	
 	# input desired delta
 	D=-0.5
 	K=1.0*10**6
 	error=100
-	while abs(error) > 0.010:
+	n=100
+	while abs(error) > 0.0010:
 		
 		d1=(m.log(S/K)+t*(r+((v**2)/2)))/(v*m.sqrt(t))
 		nd1=norm.cdf(d1)
@@ -220,22 +226,38 @@ def main():
 		# delta=m.exp(-r*t)*nd1
 		# delta=nd1
 		# put delta
-		delta=nd1-1
-		# delta=m.exp(-r*t)*(nd1-1)
+		# delta=nd1-1
+		delta=m.exp(-r*t)*(nd1-1)
 		# error=D-delta
 		if error > 0:
-			K=K-K*.1
+			K=K-K*(1/n)
 		else:
-			K=K+K*.1
-		# print('S='+str(S)+', K='+str(round(K,2))+', delta='+str(round(delta,2))+', error='+str(round(error,2)))
+			K=K+K*(1/n)
+		print('S='+str(S)+', K='+str(round(K,2))+', delta='+str(round(delta,2))+', error='+str(round(error,2)))
 		error=D-delta
+		
 	print()
 	# price=call_opt_price(S,K,r,t,v)
 	price=put_opt_price(S,K,r,t,v)
 	print('Final strike price: '+str(round(K,2))+', price: '+str(round(price,2))+', volatility: '+str(round(v,2)))
-	
+	'''
 	#Plot the option payoff
-	plot_put_payoff(S,K,r,t,v)
+	# plot_put_payoff(S,K,r,t,v)
+	
+	#calculate put option delta
+	# current underlying price
+	S=3007
+	# strike price
+	K=2700
+	# risk free rate
+	r=0.019
+	# time to maturity (days)
+	t1=43
+	# time to maturity (% of year)
+	t=t1/252
+	# given volatility
+	v=0.26
+	put_greeks(S,K,r,t,v)
 	
 	
 main()
