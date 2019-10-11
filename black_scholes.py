@@ -151,17 +151,17 @@ def main():
 	# 
 	# 
 	############
-	'''
+	
 	# put/call option price
-	P=13.75
+	P=2.85
 	# current underlying price
-	S=3007
+	S=2895
 	# strike price
-	K=2700
+	K=2000
 	# risk free rate
 	r=0.019
 	# time to maturity (days)
-	t1=43
+	t1=64
 	# time to maturity (% of year)
 	t=t1/252
 	
@@ -177,7 +177,7 @@ def main():
 	v=1.0
 	error=100
 	n=10
-	while abs(error) > 0.01:
+	while abs(error) > 0.001:
 		price=put_opt_price(S,K,r,t,v)
 		# ~ price=call_opt_price(S,K,r,t,v)
 		error=P-price
@@ -194,7 +194,7 @@ def main():
 	
 	# print('S: '+str(S)+', K: '+str(K)+', v: '+str(round(v,4)))
 	print('put_option price: '+str(round(put_opt_price(S,K,r,t,v),2)))
-	'''
+	
 	# v=.48
 	# put_greeks(S,K,r,t,v)
 	# ~ call_greeks(S,K,r,t,v)
@@ -246,18 +246,19 @@ def main():
 	
 	#calculate put option delta
 	# current underlying price
-	S=3007
+	S=2895
 	# strike price
-	K=2700
+	K=2000
 	# risk free rate
 	r=0.019
 	# time to maturity (days)
-	t1=43
+	t1=64
 	# time to maturity (% of year)
 	t=t1/252
 	# given volatility
-	v=0.26
+	v=0.35
 	put_greeks(S,K,r,t,v)
+	
 	
 	
 main()
