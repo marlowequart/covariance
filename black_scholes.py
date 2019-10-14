@@ -161,7 +161,7 @@ def main():
 	# risk free rate
 	r=0.019
 	# time to maturity (days)
-	t1=64
+	t1=62
 	# time to maturity (% of year)
 	t=t1/252
 	
