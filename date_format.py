@@ -34,7 +34,7 @@ def import_data(file_name):
 	
 def main():
 	# define file names
-	read_file='SILVER.csv'
+	read_file='CHRIS-ICE_TF1.csv'
 	
 	#######################
 	# Acceptable date formats:

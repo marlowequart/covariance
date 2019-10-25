@@ -156,18 +156,19 @@ def main():
 	#############	
 	# define file names
 	#############	
-	read_file1='SWKS.csv'
-	read_file2='AAPL.csv'
-	read_file3='SYF.csv'
-	read_file4='SILVER.csv'
-	read_file5='GOLD.csv'
-	read_file6='FB.csv'
+	read_file1='^RUT.csv'
+	read_file2='^GSPC.csv'
+	read_file3='CHRIS-CME_ES1.csv'
+	read_file4='CHRIS-ICE_TF1.csv'
+	# ~ read_file5='GOLD.csv'
+	# ~ read_file6='FB.csv'
 	# ~ read_file7='SNAP.csv'
-	read_file8='ACGL.csv'
-	read_file9='AMD.csv'
+	# ~ read_file8='ACGL.csv'
+	# ~ read_file9='AMD.csv'
 	
 	#specify long=1 or short=0
-	long_short=[0,1,1,1,1,0,0,1]
+	long_short=[1,1,1,1]
+	# ~ long_short=[1,1,1,1,1,0,0,1]
 
 	#############	
 	# create matrix of imported data
@@ -176,11 +177,11 @@ def main():
 	set2=import_data(read_file2)
 	set3=import_data(read_file3)
 	set4=import_data(read_file4)
-	set5=import_data(read_file5)
-	set6=import_data(read_file6)
+	# ~ set5=import_data(read_file5)
+	# ~ set6=import_data(read_file6)
 	# ~ set7=import_data(read_file7)
-	set8=import_data(read_file8)
-	set9=import_data(read_file9)
+	# ~ set8=import_data(read_file8)
+	# ~ set9=import_data(read_file9)
 	
 	# print(set1[:10])
 	# print(set2[:10])
@@ -188,7 +189,8 @@ def main():
 	#############	
 	# create list of matrices
 	#############	
-	sets=[set1,set2,set3,set4,set5,set6,set9,set8]
+	sets=[set1,set2,set3,set4]
+	# ~ sets=[set1,set2,set3,set4,set5,set6,set9,set8]
 	
 	# For correlations and covariance we want to look at the same date range
 	# slice out the dates we do not want to consider
@@ -197,7 +199,7 @@ def main():
 	# find minimum of maximum date in all sets
 	end_date=min_max_date(sets)
 	# set date range to a specific time period
-	timespan=181
+	timespan=3600
 	start_date=get_date(end_date,timespan)
 	print('date ranges under consideration: '+start_date+' to '+end_date)
 	# create new sets with only specified date ranges and only return price data.
@@ -218,7 +220,8 @@ def main():
 	#############	
 	# list all datasets included in plot, change labels to match positions
 	#############
-	labels=['s_SWKS','l_AAPL','l_SYF','l_SILVER','l_GOLD','s_FB','s_AMD','l_ACGL']
+	labels=['RUT','GSPC','ES','TF']
+	# ~ labels=['s_SWKS','l_AAPL','l_SYF','l_SILVER','l_GOLD','s_FB','s_AMD','l_ACGL']
 	df.columns = labels
 	corr = df.corr()
 	
