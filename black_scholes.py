@@ -153,21 +153,24 @@ def main():
 	############
 	
 	# put/call option price
-	P=2.85
+	# ~ P=4.5
 	# current underlying price
-	S=2895
+	S=240
 	# strike price
-	K=2000
+	K=225
 	# risk free rate
 	r=0.019
 	# time to maturity (days)
-	t1=62
+	t1=150
 	# time to maturity (% of year)
 	t=t1/252
 	
 	
-	
-	# price=put_opt_price(S,K,r,t,v)
+	v=0.8
+	price=put_opt_price(S,K,r,t,v)
+	print()
+	print('Final price: '+str(round(price,2))+', volatility: '+str(round(100*v,2)))
+	return
 	# error=P-price
 	# print('vol: '+str(round(100*v,2))+', price: '+str(round(price,2))+', error: '+str(round(error,2)))
 	
